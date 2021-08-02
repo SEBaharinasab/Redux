@@ -1,4 +1,5 @@
 import { useReducer } from "react";
+import TodoList from "./Components/TodoList/TodoList";
 
 const initialState = {
   todoList: [
@@ -34,6 +35,17 @@ function reducer( state, action ) {
       return { ...state, todoList: state.todoList.filter(todo => todo.id !== action.payload) };
     case "add_todo":
       return { ...state, todoList: [ ...state.todoList, action.payload ] };
+    case "update_isDone_status": {
+      return {
+        ...state,
+        todoList:
+          state.todoList.map(todo => todo.id === action.payload.todoId ? {
+            ...todo, checkList: todo.checkList.map(check => check.id === action.payload.checkId ? {
+              ...check, isDone: !check.isDone,
+            } : check),
+          } : todo),
+      };
+    }
     default:
       return state;
   }
@@ -57,23 +69,7 @@ function App() {
   return (
     <div className={"App"}>
       <button onClick={addNewTodo}>Add new todo</button>
-      {
-        state.todoList.map(todo => (
-          <div key={todo.id}>
-            <hr/>
-            <h3>{todo.title}</h3>
-            <p>{todo.description}</p>
-            <button onClick={() => dispatch({ type: "remove_todo", payload: todo.id })}>
-              delete
-            </button>
-            <ul>
-              {todo.checkList.map(check => (
-                <li key={check.id}>{check.title}</li>
-              ))}
-            </ul>
-          </div>
-        ))
-      }
+      <TodoList todoList={state.todoList} dispatch={dispatch}/>
     </div>
   );
 }
