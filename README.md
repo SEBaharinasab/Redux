@@ -8,7 +8,7 @@
 const [ counter, setCounter ] = useState(0);
 setCounter(prev => prev + 1)  // true way
 setCounter(prev => prev - 1)  // true way
-setCounter('lorem ipsum')   // It works, but using useState like this will cause errors.
+setCounter('lorem ipsum')     // It works, but using useState like this will cause errors.
 ```
 
 <hr/>
@@ -84,16 +84,67 @@ function App() {
   )
 }
 
-/*  TodoList.jsx  */
+/*********************************************/
+//  TodoList.jsx
 const { state } = useContext(TodoContext);
 
-/*  TodoItem  */
+//  TodoItem.jsx
+const { dispatch } = useContext(TodoContext);
+
+//  TodoCheck.jsx
 const { dispatch } = useContext(TodoContext);
 
 ```
 
-visit [this page](https://medium.com/swlh/avoid-prop-drilling-with-react-context-a00392ee3d8)
-for more details.
+visit <a href="https://medium.com/swlh/avoid-prop-drilling-with-react-context-a00392ee3d8" target="_blank">
+this page</a> for more details.
+
+To Reduce the ~~Complexity~~ and make the code **Cleaner**, we should move the <u>context
+section</u> and the required functions to another file. But to use ```useContext``` in
+the ```app.js``` file, we need to import and use ```contextProvide``` in ```index.js```.
+
+```javascript
+/*  TodoContext.jsx  */
+const initialState = { ... }
+
+function reducer() { ... }
+
+export const TodoContext = createContext();
+
+export default function TodoContextProvider( { children } ) {
+  const [ state, dispatch ] = useReducer(reducer, initialState);
+  const value = { state, dispatch };
+  return (
+    <TodoContext.Provider value={value}>
+      {children}
+    </TodoContext.Provider>
+  );
+}
+
+/*********************************************/
+/*  index.js  */
+
+ReactDOM.render(
+  <React.StrictMode>
+    <TodoContextProvider>   // wrap it around App
+      <App/>
+    </TodoContextProvider>
+  </React.StrictMode>,
+  document.getElementById("root"),
+);
+
+/*********************************************/
+/*  app.js  */
+export default function App() {
+  const { state, dispatch } = useContext(TodoContext);
+
+  return (
+    //  remove TodoContext.Provider
+    <TodoList/>
+  );
+}
+
+```
 
 <hr/>
 
