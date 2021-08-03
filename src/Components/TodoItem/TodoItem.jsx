@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import TodoCheck from "../TodoCheck/TodoCheck";
+import { TodoContext } from "../../App";
 
-function TodoItem( { todoItem, dispatch } ) {
+function TodoItem( { todoItem } ) {
+  const { dispatch } = useContext(TodoContext);
   return (
     <>
       <div>
@@ -16,7 +18,6 @@ function TodoItem( { todoItem, dispatch } ) {
             <TodoCheck
               key={todoItem.id + "" + check.id}
               checkItem={check}
-              dispatch={dispatch}
               todoId={todoItem.id}
             />
           ))}

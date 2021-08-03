@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { createContext, useReducer } from "react";
 import TodoList from "./Components/TodoList/TodoList";
 
 const initialState = {
@@ -51,8 +51,11 @@ function reducer( state, action ) {
   }
 }
 
+export const TodoContext = createContext(initialState);
+
 function App() {
   const [ state, dispatch ] = useReducer(reducer, initialState);
+  const value = { state, dispatch };
 
   const addNewTodo = () => {
     let id = Date.now();
@@ -65,12 +68,13 @@ function App() {
     ];
     dispatch({ type: "add_todo", payload: { id, title, description, checkList } });
   };
-
   return (
-    <div className={"App"}>
-      <button onClick={addNewTodo}>Add new todo</button>
-      <TodoList todoList={state.todoList} dispatch={dispatch}/>
-    </div>
+    <TodoContext.Provider value={value}>
+      <div className={"App"}>
+        <button onClick={addNewTodo}>Add new todo</button>
+        <TodoList todoList={state.todoList} dispatch={dispatch}/>
+      </div>
+    </TodoContext.Provider>
   );
 }
 

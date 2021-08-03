@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
+import { TodoContext } from "../../App";
 
-function TodoCheck( { checkItem, dispatch, todoId } ) {
+function TodoCheck( { checkItem, todoId } ) {
+  const { dispatch } = useContext(TodoContext);
+
   return (
     <div>
       <label>
