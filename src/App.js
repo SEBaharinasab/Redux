@@ -1,9 +1,10 @@
-import { useContext } from "react";
+import React from "react";
 import TodoList from "./Components/TodoList/TodoList";
-import { TodoContext } from "./Context/TodoContext/TodoContext";
+import { useDispatch } from "react-redux";
+import { addTodo } from "./Store/Todo.reducer/Todo.actions";
 
 function App() {
-  const { dispatch } = useContext(TodoContext);
+  const dispatch = useDispatch();
 
   const addNewTodo = () => {
     let id = Date.now();
@@ -14,7 +15,7 @@ function App() {
       { id: 2, title: "Check 2", isDone: false },
       { id: 3, title: "Check 3", isDone: true },
     ];
-    dispatch({ type: "add_todo", payload: { id, title, description, checkList } });
+    dispatch(addTodo(id, title, description, checkList));
   };
 
   return (

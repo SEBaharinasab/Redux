@@ -1,16 +1,18 @@
-import React, { useContext } from "react";
+import React from "react";
 import TodoCheck from "../TodoCheck/TodoCheck";
-import { TodoContext } from "../../Context/TodoContext/TodoContext";
+import { useDispatch } from "react-redux";
+import { removeTodo } from "../../Store/Todo.reducer/Todo.actions";
 
 function TodoItem( { todoItem } ) {
-  const { dispatch } = useContext(TodoContext);
+  const dispatch = useDispatch();
+
   return (
     <>
       <div>
         <hr/>
         <h3>{todoItem.title}</h3>
         <p>≻{todoItem.description}</p>
-        <button onClick={() => dispatch({ type: "remove_todo", payload: todoItem.id })}>
+        <button onClick={() => dispatch(removeTodo(todoItem.id))}>
           delete
         </button>
         <ul>

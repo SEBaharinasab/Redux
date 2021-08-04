@@ -1,17 +1,15 @@
-import React, { useContext } from "react";
-import { TodoContext } from "../../Context/TodoContext/TodoContext";
+import React from "react";
+import { useDispatch } from "react-redux";
+import { updateStatus } from "../../Store/Todo.reducer/Todo.actions";
 
 function TodoCheck( { checkItem, todoId } ) {
-  const { dispatch } = useContext(TodoContext);
+  const dispatch = useDispatch();
 
   return (
     <div>
       <label>
         <input
-          onChange={() => dispatch({
-            type: "update_isDone_status",
-            payload: { todoId, checkId: checkItem.id },
-          })}
+          onChange={() => dispatch(updateStatus(todoId, checkItem.id))}
           type={"checkbox"}
           checked={checkItem.isDone}
         />
