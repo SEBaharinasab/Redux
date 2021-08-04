@@ -1,4 +1,5 @@
 import types from "./Todo.types";
+import utils from "./Todo.utils";
 
 const initialState = {
   todoList: [
@@ -30,26 +31,13 @@ function TodoReducer( state = initialState, action ) {
 
   switch ( action.type ) {
     case types.REMOVE_TODO:
-      return {
-        ...state,
-        todoList: state.todoList.filter(todo => todo.id !== action.payload),
-      };
+      return utils.removeTodo(state, action);
 
     case types.ADD_TODO:
-      return {
-        ...state,
-        todoList: [ ...state.todoList, action.payload ],
-      };
+      return utils.addTodo(state, action);
 
     case types.UPDATE_STATUS:
-      return {
-        ...state,
-        todoList: state.todoList.map(todo => todo.id === action.payload.todoId ? {
-          ...todo, checkList: todo.checkList.map(check => check.id === action.payload.checkId ? {
-            ...check, isDone: !check.isDone,
-          } : check),
-        } : todo),
-      };
+      return utils.updateStatus(state, action);
 
     default:
       return state;
