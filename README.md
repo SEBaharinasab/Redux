@@ -239,3 +239,5 @@ export default connect(mapStateToProps, mapDispatchToProps)(App);
 <hr/>
 
 ### 6) Replace Redux-Toolkit with Redux
+
+> ***Redux-Toolkit*** declared in ***[This](https://github.com/SEBahari/toolkit)*** Repo.
