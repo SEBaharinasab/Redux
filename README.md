@@ -2,7 +2,7 @@
 
 ## Workflow :
 
-#### 1) Work with useState Hook
+### 1) Work with `useState` Hook
 
 ```javascript
 const [ counter, setCounter ] = useState(0);
@@ -13,15 +13,15 @@ setCounter('lorem ipsum')     // It works, but using useState like this will cau
 
 <hr/>
 
-#### 2) Use useReducer instead useState for more complex states
+### 2) Use `useReducer` instead `useState` for more complex states
 
-With useReducer we can write functions once and use them multiple time.
+With `useReducer` we can write functions once and use them multiple time.
 
-This hook:
+With this **hook**:
 
-1) reduces *errors*
-2) makes the code *cleaner*
-3) and makes the code *easier to change*
+1) ***errors are reduced***
+2) ***code is cleaned***
+3) and ***code change is easier***
 
 ```javascript
 //  Initial State
@@ -50,7 +50,7 @@ function App() {
 
 <hr/>
 
-#### 3) Divide the TodoList section into separate components
+### 3) Divide the TodoList section into separate components
 
 ```
 App.js 
@@ -65,9 +65,9 @@ or ([Lifting State Up](https://reactjs.org/docs/lifting-state-up.html)).
 
 <hr/>
 
-#### 4) Manage Reducers with useContext
+### 4) Manage Reducers with useContext
 
-To solve the prop-drill problem, we manage the Reducers with useContext Hook.
+To solve the **Props-Drill** problem, we manage the Reducers with `useContext` Hook.
 
 ```javascript
 /*  App.js  */
@@ -96,18 +96,22 @@ const { dispatch } = useContext(TodoContext);
 
 ```
 
-visit <a href="https://medium.com/swlh/avoid-prop-drilling-with-react-context-a00392ee3d8" target="_blank">
-this page</a> for more details.
+visit [this page](https://medium.com/swlh/avoid-prop-drilling-with-react-context-a00392ee3d8) for
+more details.
 
-To Reduce the ~~Complexity~~ and make the code **Cleaner**, we should move the <u>context
-section</u> and the required functions to another file. But to use ```useContext``` in
-the ```app.js``` file, we need to import and use ```contextProvide``` in ```index.js```.
+<hr/>
+
+#### 4.1) Clean Code
+
+To Reduce the ~~Complexity~~ and make the code **Cleaner**, The context section and required
+functions can be moved to another file, But to use `useContext` in the `app.js` file, you must
+import and use `contextProvide` in `index.js`.
 
 ```javascript
 /*  TodoContext.jsx  */
 const initialState = { ... }
 
-function reducer() { ... }
+function reducer( state, action ) { ... }
 
 export const TodoContext = createContext();
 
@@ -126,7 +130,7 @@ export default function TodoContextProvider( { children } ) {
 
 ReactDOM.render(
   <React.StrictMode>
-    <TodoContextProvider>   // wrap it around App
+    <TodoContextProvider>  {/* wrap it around App */}
       <App/>
     </TodoContextProvider>
   </React.StrictMode>,
@@ -139,7 +143,7 @@ export default function App() {
   const { state, dispatch } = useContext(TodoContext);
 
   return (
-    //  remove TodoContext.Provider
+    //  TodoContext.Provider removed
     <TodoList/>
   );
 }
@@ -148,8 +152,90 @@ export default function App() {
 
 <hr/>
 
-#### 5) Use Redux instead Context for decrease complexity
+### 5) Use Redux instead Context for decrease complexity
+
+All contexts must be entered in the index.js file and used nested. But as the number of contexts
+increases, this method itself becomes more complicated!
+
+***This problem is solved by Redux.***
+
+All works starts from `/src/Store` directory
+
+```javascript
+
+/*  /src/Store/Todo.reducer/Todo.reducer.js  */
+
+const initialState = { ... };
+
+function TodoReducer( state = initialState, action ) { ... }
+
+/*********************************************/
+/*  /src/Store/store.js  */
+
+//  Import Reducers
+import TodoReducer from "./Todo.reducer/Todo.reducer";
+
+//  Combine Reducers as RootReducer
+const RootReducer = combineReducers({
+  Todo: TodoReducer,
+});
+
+//  Create Store for RootReducer
+const Store = createStore(RootReducer);
+export default Store;
+
+/*********************************************/
+/*  /src/index.js  */
+
+import { Provider } from "react-redux";
+import Store from "./Store/Store";
+
+ReactDOM.render(
+  <React.StrictMode>
+    <Provider store={Store}>  {/* Provide the store like this. */}
+      <App/>
+    </Provider>
+  </React.StrictMode>,
+  document.getElementById("root"),
+);
+
+```
+
+Redux offers two hooks for access to dispatches and states. `useDispatch` and `useSelector`.
+
+```javascript
+const dispatch = useDispatch();
+const todoList = useSelector(state => state.Todo.todoList);
+```
+
+You can also access the state and dispatch using the `connect()` function, but this function is
+Deprecated.
+
+```javascript
+function App( { todoList, addTodo } ) { ... }
+
+function mapStateToProps( state ) {
+  const { Todo } = state;
+  return { todoList: Todo.todoList }
+}
+
+function mapDispatchToProps( dispatch ) {
+  return {
+    addTodo( data ) {
+      dispatch({ type: 'add_todo', payload: data })
+    }
+  }
+}
+
+//  only state
+export default connect(mapStateToProps)(App);
+//  only dispatch
+export default connect(null, mapDispatchToProps)(App);
+//  both of them
+export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+```
 
 <hr/>
 
-#### 6) Replace Redux-Toolkit with Redux
+### 6) Replace Redux-Toolkit with Redux
