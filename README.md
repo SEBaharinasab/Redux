@@ -1,4 +1,4 @@
-# Redux-tool step by step
+# Redux step by step
 
 ## Workflow :
 
